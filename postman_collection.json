@@ -1,0 +1,568 @@
+{
+  "info": {
+    "name": "Tickets API - Complete Collection",
+    "description": "Complete API collection for testing all ticket endpoints with AI classification",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Debug",
+      "item": [
+        {
+          "name": "Check Environment Variables",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/debug",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "debug"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Create Tickets",
+      "item": [
+        {
+          "name": "Create CRITICAL Priority Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Production server down urgent\",\n  \"description\": \"The entire production system is offline and all customers are unable to access our services. This is causing major revenue loss and customer complaints.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create MEDIUM Priority Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Slow page loading\",\n  \"description\": \"Some users are reporting that the dashboard page is loading slower than usual. It's affecting user experience but the system is still operational.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create LOW Priority Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Question about feature\",\n  \"description\": \"I would like to know how to export my data to CSV format. Can you provide some documentation or help on this topic?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create HIGH Priority Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Security vulnerability detected\",\n  \"description\": \"Our security team has detected a potential vulnerability in the authentication system. We need immediate attention to prevent any security breach.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Ticket - Validation Error (title too short)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Hi\",\n  \"description\": \"This should fail validation\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Ticket - Validation Error (description too short)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Valid title\",\n  \"description\": \"Short\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "List Tickets",
+      "item": [
+        {
+          "name": "List All Tickets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tickets - Filter by Status OPEN",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets?status=OPEN",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "OPEN"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tickets - Filter by Priority CRITICAL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets?priority=CRITICAL",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"],
+              "query": [
+                {
+                  "key": "priority",
+                  "value": "CRITICAL"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tickets - Filter by Priority LOW",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets?priority=LOW",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"],
+              "query": [
+                {
+                  "key": "priority",
+                  "value": "LOW"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tickets - Filter by Priority MEDIUM",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets?priority=MEDIUM",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"],
+              "query": [
+                {
+                  "key": "priority",
+                  "value": "MEDIUM"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Tickets - Combined Filter (OPEN + CRITICAL)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets?status=OPEN&priority=CRITICAL",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "OPEN"
+                },
+                {
+                  "key": "priority",
+                  "value": "CRITICAL"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Get Ticket by ID",
+      "item": [
+        {
+          "name": "Get Ticket by ID - Success",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ticket by ID - Not Found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/non-existent-id-12345",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "non-existent-id-12345"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Update Ticket Status",
+      "item": [
+        {
+          "name": "Update Status - OPEN to IN_PROGRESS",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_PROGRESS\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status - IN_PROGRESS to RESOLVED",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"RESOLVED\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status - RESOLVED to CLOSED",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CLOSED\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status - Reopen CLOSED to OPEN",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"OPEN\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status - Invalid Transition (should fail)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"RESOLVED\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status - Ticket Not Found",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_PROGRESS\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/non-existent-id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "non-existent-id", "status"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reclassify Ticket",
+      "item": [
+        {
+          "name": "Reclassify Ticket - Success",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}/reclassify",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}", "reclassify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reclassify Ticket - Not Found",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/non-existent-id/reclassify",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "non-existent-id", "reclassify"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Close Ticket",
+      "item": [
+        {
+          "name": "Close Ticket - Success",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}/close",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}", "close"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Close Ticket - Not Found",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/non-existent-id/close",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "non-existent-id", "close"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Close Ticket - Invalid Transition (already closed)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}/close",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}", "close"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delete Ticket",
+      "item": [
+        {
+          "name": "Delete Ticket - Success",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/{{ticket_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "{{ticket_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Ticket - Not Found",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/non-existent-id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "non-existent-id"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "ticket_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
+
