@@ -1,7 +1,6 @@
 import { TicketRepositoryPort } from '../ports/TicketRepositoryPort';
 import { LLMClientPort } from '../ports/LLMClientPort';
 import { Ticket } from '../../domain/entities/Ticket';
-import { UrgencyPriorityMapper } from '../../domain/services/UrgencyPriorityMapper';
 
 interface CreateTicketInput {
   title: string;
@@ -20,10 +19,10 @@ export class CreateTicketUseCase {
       title: input.title,
       description: input.description,
     });
-    // Map to domain priority
-    const priority = UrgencyPriorityMapper.map(urgencyScore);
-    // Create ticket entity
-    const ticket = new Ticket(input.title, input.description, 'OPEN', priority, urgencyScore);
+    
+    // Create ticket entity using factory method (encapsulates priority mapping)
+    const ticket = Ticket.create(input.title, input.description, urgencyScore);
+    
     // Persist
     await this.ticketRepository.save(ticket);
     return ticket;
