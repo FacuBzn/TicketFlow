@@ -7,6 +7,11 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./jest.config.js --testMatch=\"**/*.e2e-spec.ts\"",
     "lint": "echo \"(opcional) configurar ESLint\"",
     "format": "echo \"(opcional) configurar Prettier\""
   },
@@ -29,9 +34,15 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@nestjs/testing": "^10.4.20",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.3.1",
+    "@types/supertest": "^6.0.3",
     "@types/uuid": "^9.0.1",
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2"
