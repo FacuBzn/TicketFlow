@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Patch, Delete, Param, Query } from '@nestjs/common';
+import { Body, Controller, Post, Get, Patch, Delete, Param, Query, NotFoundException, UseInterceptors } from '@nestjs/common';
 import { CreateTicketDto } from '../dtos/CreateTicketDto';
 import { TicketResponseDto } from '../dtos/TicketResponseDto';
 import { UpdateTicketStatusDto } from '../dtos/UpdateTicketStatusDto';
@@ -11,9 +11,12 @@ import { CloseTicketUseCase } from '../../application/use-cases/CloseTicketUseCa
 import { ReclassifyTicketUseCase } from '../../application/use-cases/ReclassifyTicketUseCase';
 import { DeleteTicketUseCase } from '../../application/use-cases/DeleteTicketUseCase';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { TicketMapper } from '../mappers/TicketMapper';
+import { LoggingInterceptor } from '../../infrastructure/interceptors/LoggingInterceptor';
 
 @ApiTags('Tickets')
 @Controller('tickets')
+@UseInterceptors(LoggingInterceptor)
 export class TicketsController {
   constructor(
     private readonly createTicketUseCase: CreateTicketUseCase,
@@ -25,9 +28,49 @@ export class TicketsController {
     private readonly deleteTicketUseCase: DeleteTicketUseCase,
   ) {}
 
+  @Get('health')
+  @ApiOperation({ 
+    summary: 'Health check endpoint',
+    description: 'Returns the service health status and configuration'
+  })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Service is healthy',
+    schema: {
+      example: {
+        status: 'ok',
+        timestamp: '2025-10-22T20:00:00.000Z',
+        uptime: 3600,
+        service: 'ticketflow',
+        version: '1.0.0',
+        llmProvider: 'gemini',
+        environment: 'development'
+      }
+    }
+  })
+  healthCheck() {
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      service: 'ticketflow',
+      version: '1.0.0',
+      llmProvider: process.env.LLM_PROVIDER || 'stub',
+      environment: process.env.NODE_ENV || 'development',
+    };
+  }
+
   @Get('debug')
-  @ApiOperation({ summary: 'Debug environment variables' })
+  @ApiOperation({ 
+    summary: 'Debug environment variables (development only)',
+    description: 'Returns configuration info. Only accessible in non-production environments.'
+  })
   debug() {
+    // Security: Only allow in development/staging environments
+    if (process.env.NODE_ENV === 'production') {
+      throw new NotFoundException('Debug endpoint not available in production');
+    }
+    
     return {
       LLM_PROVIDER: process.env.LLM_PROVIDER,
       OPENAI_API_KEY_EXISTS: !!process.env.OPENAI_API_KEY,
@@ -79,7 +122,7 @@ export class TicketsController {
   })
   async create(@Body() dto: CreateTicketDto): Promise<TicketResponseDto> {
     const ticket = await this.createTicketUseCase.execute(dto);
-    return { ...ticket };
+    return TicketMapper.toDto(ticket);
   }
 
   @Get()
@@ -93,7 +136,7 @@ export class TicketsController {
   })
   async list(@Query() filters: TicketFiltersDto): Promise<TicketResponseDto[]> {
     const tickets = await this.listTicketsUseCase.execute(filters);
-    return tickets.map(ticket => ({ ...ticket }));
+    return TicketMapper.toDtoList(tickets);
   }
 
   @Get(':id')
@@ -103,7 +146,7 @@ export class TicketsController {
   @ApiResponse({ status: 404, description: 'Ticket not found' })
   async getById(@Param('id') id: string): Promise<TicketResponseDto> {
     const ticket = await this.getTicketByIdUseCase.execute(id);
-    return { ...ticket };
+    return TicketMapper.toDto(ticket);
   }
 
   @Patch(':id/status')
@@ -118,7 +161,7 @@ export class TicketsController {
     @Body() dto: UpdateTicketStatusDto
   ): Promise<TicketResponseDto> {
     const ticket = await this.updateTicketStatusUseCase.execute(id, dto.status);
-    return { ...ticket };
+    return TicketMapper.toDto(ticket);
   }
 
   @Post(':id/reclassify')
@@ -131,7 +174,7 @@ export class TicketsController {
   @ApiResponse({ status: 404, description: 'Ticket not found' })
   async reclassify(@Param('id') id: string): Promise<TicketResponseDto> {
     const ticket = await this.reclassifyTicketUseCase.execute(id);
-    return { ...ticket };
+    return TicketMapper.toDto(ticket);
   }
 
   @Patch(':id/close')
@@ -142,7 +185,7 @@ export class TicketsController {
   @ApiResponse({ status: 404, description: 'Ticket not found' })
   async close(@Param('id') id: string): Promise<TicketResponseDto> {
     const ticket = await this.closeTicketUseCase.execute(id);
-    return { ...ticket };
+    return TicketMapper.toDto(ticket);
   }
 
   @Delete(':id')

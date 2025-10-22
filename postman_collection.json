@@ -6,10 +6,47 @@
   },
   "item": [
     {
-      "name": "Debug",
+      "name": "Health & Monitoring",
       "item": [
         {
-          "name": "Check Environment Variables",
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tickets/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tickets", "health"]
+            },
+            "description": "Check service health status, uptime, and configuration"
+          },
+          "response": [
+            {
+              "name": "Healthy Service",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/tickets/health",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "tickets", "health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"ok\",\n  \"timestamp\": \"2025-10-22T20:00:00.000Z\",\n  \"uptime\": 3600,\n  \"service\": \"ticketflow\",\n  \"version\": \"1.0.0\",\n  \"llmProvider\": \"gemini\",\n  \"environment\": \"development\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Debug - Check Environment (Dev Only)",
           "request": {
             "method": "GET",
             "header": [],
@@ -17,9 +54,55 @@
               "raw": "{{base_url}}/api/v1/tickets/debug",
               "host": ["{{base_url}}"],
               "path": ["api", "v1", "tickets", "debug"]
-            }
+            },
+            "description": "Debug endpoint to verify environment configuration. Only available in development mode. Returns 404 in production for security."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Development - Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/tickets/debug",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "tickets", "debug"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"LLM_PROVIDER\": \"gemini\",\n  \"OPENAI_API_KEY_EXISTS\": true,\n  \"OPENAI_API_KEY_LENGTH\": 51,\n  \"GEMINI_API_KEY_EXISTS\": true,\n  \"GEMINI_API_KEY_LENGTH\": 39,\n  \"NODE_ENV\": \"development\"\n}"
+            },
+            {
+              "name": "Production - Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/tickets/debug",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "tickets", "debug"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Debug endpoint not available in production\",\n  \"timestamp\": \"2025-10-22T20:00:00.000Z\"\n}"
+            }
+          ]
         }
       ]
     },

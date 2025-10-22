@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AppLogger } from '../../logger/AppLogger';
+import { TicketNotFoundError } from '../../../domain/errors/TicketNotFoundError';
+import { InvalidStateTransitionError } from '../../../domain/errors/InvalidStateTransitionError';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -22,7 +24,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let message = 'Internal server error';
     let error = 'Internal Server Error';
 
-    if (exception instanceof HttpException) {
+    // Map domain exceptions to HTTP exceptions
+    if (exception instanceof TicketNotFoundError) {
+      status = HttpStatus.NOT_FOUND;
+      message = exception.message;
+      error = 'Not Found';
+    } else if (exception instanceof InvalidStateTransitionError) {
+      status = HttpStatus.BAD_REQUEST;
+      message = exception.message;
+      error = 'Bad Request';
+    } else if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
       

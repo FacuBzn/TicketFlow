@@ -26,6 +26,13 @@ npm start
 
 ## 🎯 Endpoints Disponibles
 
+### Monitoreo y Salud
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/api/v1/tickets/health` | Health check endpoint (estado del servicio) |
+| GET | `/api/v1/tickets/debug` | Variables de entorno (solo desarrollo) |
+
+### Gestión de Tickets
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | POST | `/api/v1/tickets` | Crear ticket con clasificación AI |
@@ -36,9 +43,13 @@ npm start
 | PATCH | `/api/v1/tickets/:id/close` | Cerrar ticket |
 | DELETE | `/api/v1/tickets/:id` | Eliminar ticket |
 
-### 📚 Documentación Swagger
-- **URL**: `http://localhost:3000/docs`
-- Incluye ejemplos interactivos para cada endpoint
+### 📚 Documentación
+
+- **📖 Índice Completo**: `DOCS_INDEX.md` - **Empieza aquí** para navegar toda la documentación
+- **Swagger UI**: `http://localhost:3000/docs` - Documentación interactiva OpenAPI
+- **Postman Collection**: `postman_collection.json` - Colección completa con 40+ requests
+- **Ejemplos Simples**: `EJEMPLOS_TICKETS.md` - 3 ejemplos rápidos (LOW, MEDIUM, CRITICAL)
+
 
 ## 🔧 Ejemplos de Uso
 
@@ -91,6 +102,16 @@ curl -X PATCH http://localhost:3000/api/v1/tickets/{id}/close
 curl -X DELETE http://localhost:3000/api/v1/tickets/{id}
 ```
 
+### Health Check
+```bash
+curl http://localhost:3000/api/v1/tickets/health
+```
+
+### Debug (solo desarrollo)
+```bash
+curl http://localhost:3000/api/v1/tickets/debug
+```
+
 ## ⚙️ Variables de Entorno
 
 Edita `.env` según el provider de LLM:
@@ -116,13 +137,13 @@ src/
 ├── api/                    # Capa de presentación
 │   ├── controllers/        # Controladores REST
 │   ├── dtos/              # Data Transfer Objects
+│   ├── mappers/           # Mapeo de entidades a DTOs
 │   └── swagger/           # Configuración Swagger
 ├── application/           # Capa de aplicación
 │   ├── use-cases/         # Casos de uso (lógica de negocio)
 │   └── ports/             # Interfaces (puertos)
 ├── domain/                # Capa de dominio
 │   ├── entities/          # Entidades del dominio
-│   ├── value-objects/     # Value Objects
 │   ├── services/          # Servicios de dominio
 │   └── errors/            # Errores de dominio
 └── infrastructure/        # Capa de infraestructura
@@ -130,14 +151,20 @@ src/
     │   ├── persistence/   # Repositorio en memoria
     │   ├── llm/          # Adapters para LLMs
     │   └── http/         # Filtros y middlewares
-    └── providers/         # Factories y providers
+    ├── interceptors/      # Interceptores NestJS
+    ├── logger/            # Configuración de logging
+    ├── providers/         # Factories y providers
+    └── utils/             # Utilidades (retry, etc.)
 ```
 
 ### Principios Arquitectónicos:
 - ✅ **Desacoplamiento total**: Dominio independiente de frameworks
 - ✅ **Inversión de dependencias**: Abstracciones mediante ports
 - ✅ **Fácil testing**: Use cases aislados y testeables
-- ✅ **Intercambiabilidad**: Cambiar LLM o persistencia sin tocar dominio
+- ✅ **Intercambiabilidad**: Cambiar LLM o persistencia sin alterar lógica
+- ✅ **Encapsulación**: Reglas de negocio protegidas en entidades
+- ✅ **Excepciones de Dominio**: Application layer independiente de NestJS
+- ✅ **Resiliencia**: Retry logic y timeouts en adaptadores externos
 
 ## 📊 Modelo de Dominio
 
@@ -194,9 +221,11 @@ Estructura preparada para:
 - **Lenguaje**: TypeScript 5
 - **Validación**: class-validator, class-transformer
 - **Documentación**: Swagger/OpenAPI
-- **Logging**: Pino + nestjs-pino (JSON estructurado)
-- **LLM**: OpenAI GPT-3.5-turbo / Google Gemini
-- **Persistencia**: In-Memory (Map) - fácil migrar a DB
+- **Logging**: Pino + nestjs-pino (JSON estructurado, correlationId, metadata)
+- **Rate Limiting**: @nestjs/throttler
+- **LLM**: OpenAI GPT-3.5-turbo / Google Gemini 2.0 Flash Lite
+- **Persistencia**: In-Memory (Map Singleton) - fácil migrar a DB
+- **Resiliencia**: Retry handler con exponential backoff y timeout
 
 ## 📊 Sistema de Logging Estructurado
 

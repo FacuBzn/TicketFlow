@@ -1,0 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BASE_URGENCY_PROMPT = void 0;
+exports.BASE_URGENCY_PROMPT = `SYSTEM: Eres un analista de soporte. Devuelves SOLO un JSON.\nINSTRUCCIONES:\n- Lee título y descripción del ticket.\n- Devuelve JSON: { \"urgencyScore\": number } donde 0..1.\n- No incluyas texto fuera del JSON.\nCRITERIOS:\n- Riesgo económico/seguridad/caída del servicio → cercano a 1.0\n- Consulta general sin impacto inmediato → cercano a 0.2\nUSUARIO:\nTítulo: \"{{title}}\"\nDescripción: \"{{description}}\"\n`;
+//# sourceMappingURL=commonPrompt.js.map

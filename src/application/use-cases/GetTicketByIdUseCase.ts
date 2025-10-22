@@ -1,6 +1,6 @@
 import { TicketRepositoryPort } from '../ports/TicketRepositoryPort';
 import { Ticket } from '../../domain/entities/Ticket';
-import { NotFoundException } from '@nestjs/common';
+import { TicketNotFoundError } from '../../domain/errors/TicketNotFoundError';
 
 export class GetTicketByIdUseCase {
   constructor(private readonly ticketRepository: TicketRepositoryPort) {}
@@ -9,7 +9,7 @@ export class GetTicketByIdUseCase {
     const ticket = await this.ticketRepository.findById(id);
     
     if (!ticket) {
-      throw new NotFoundException(`Ticket with ID ${id} not found`);
+      throw new TicketNotFoundError(id);
     }
 
     return ticket;

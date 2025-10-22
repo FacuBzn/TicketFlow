@@ -1,6 +1,6 @@
 import { TicketRepositoryPort } from '../ports/TicketRepositoryPort';
 import { Ticket } from '../../domain/entities/Ticket';
-import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { TicketNotFoundError } from '../../domain/errors/TicketNotFoundError';
 import { StateTransitionValidator } from '../../domain/services/StateTransitionValidator';
 
 export class CloseTicketUseCase {
@@ -10,20 +10,14 @@ export class CloseTicketUseCase {
     const ticket = await this.ticketRepository.findById(id);
     
     if (!ticket) {
-      throw new NotFoundException(`Ticket with ID ${id} not found`);
+      throw new TicketNotFoundError(id);
     }
 
-    // Validate can close
-    try {
-      StateTransitionValidator.validate(ticket.status, 'CLOSED');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Cannot close ticket';
-      throw new BadRequestException(`Cannot close ticket: ${message}`);
-    }
+    // Validate can close (will throw InvalidStateTransitionError if invalid)
+    StateTransitionValidator.validate(ticket.status, 'CLOSED');
 
-    // Update to CLOSED
-    ticket.status = 'CLOSED';
-    ticket.updatedAt = new Date();
+    // Use encapsulated method to close ticket
+    ticket.close();
 
     await this.ticketRepository.save(ticket);
     return ticket;

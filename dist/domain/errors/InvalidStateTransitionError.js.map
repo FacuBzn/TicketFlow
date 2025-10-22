@@ -1,0 +1,1 @@
+{"version":3,"file":"InvalidStateTransitionError.js","sourceRoot":"","sources":["../../../src/domain/errors/InvalidStateTransitionError.ts"],"names":[],"mappings":";;;AAEA,MAAa,2BAA4B,SAAQ,KAAK;IACpD,YAAY,IAAkB,EAAE,EAAgB;QAC9C,KAAK,CAAC,iCAAiC,IAAI,OAAO,EAAE,EAAE,CAAC,CAAC;QACxD,IAAI,CAAC,IAAI,GAAG,6BAA6B,CAAC;IAC5C,CAAC;CACF;AALD,kEAKC"}

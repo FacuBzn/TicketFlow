@@ -1,8 +1,7 @@
 import { TicketRepositoryPort } from '../ports/TicketRepositoryPort';
 import { LLMClientPort } from '../ports/LLMClientPort';
 import { Ticket } from '../../domain/entities/Ticket';
-import { UrgencyPriorityMapper } from '../../domain/services/UrgencyPriorityMapper';
-import { NotFoundException } from '@nestjs/common';
+import { TicketNotFoundError } from '../../domain/errors/TicketNotFoundError';
 
 export class ReclassifyTicketUseCase {
   constructor(
@@ -14,7 +13,7 @@ export class ReclassifyTicketUseCase {
     const ticket = await this.ticketRepository.findById(id);
     
     if (!ticket) {
-      throw new NotFoundException(`Ticket with ID ${id} not found`);
+      throw new TicketNotFoundError(id);
     }
 
     // Re-classify using LLM
@@ -23,12 +22,8 @@ export class ReclassifyTicketUseCase {
       description: ticket.description,
     });
 
-    // Update priority based on new score
-    const priority = UrgencyPriorityMapper.map(urgencyScore);
-    
-    ticket.urgencyScore = urgencyScore;
-    ticket.priority = priority;
-    ticket.updatedAt = new Date();
+    // Use encapsulated method to reclassify
+    ticket.reclassify(urgencyScore);
 
     await this.ticketRepository.save(ticket);
     return ticket;

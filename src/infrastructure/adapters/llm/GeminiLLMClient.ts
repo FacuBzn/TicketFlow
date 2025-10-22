@@ -1,9 +1,15 @@
 import { LLMClientPort } from '../../../application/ports/LLMClientPort';
 import { BASE_URGENCY_PROMPT } from './commonPrompt';
 import { AppLogger } from '../../logger/AppLogger';
+import { RetryHandler } from '../../utils/RetryHandler';
 
 export class GeminiLLMClient implements LLMClientPort {
   private readonly apiKey: string;
+  private readonly retryOptions = {
+    maxRetries: 3,
+    initialDelayMs: 1000,
+    timeoutMs: 15000, // 15 seconds timeout
+  };
 
   constructor(private readonly logger: AppLogger) {
     this.apiKey = process.env.GEMINI_API_KEY!;
@@ -11,6 +17,14 @@ export class GeminiLLMClient implements LLMClientPort {
 
   async classifyUrgency(input: { title: string; description: string }): Promise<{ urgencyScore: number }> {
     this.logger.log('Processing ticket classification', 'GeminiLLMClient', { provider: 'gemini' });
+
+    return RetryHandler.withRetry(
+      () => this.performClassification(input),
+      this.retryOptions
+    );
+  }
+
+  private async performClassification(input: { title: string; description: string }): Promise<{ urgencyScore: number }> {
     
     const prompt = BASE_URGENCY_PROMPT
       .replace('{{title}}', input.title)

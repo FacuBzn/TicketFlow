@@ -157,22 +157,17 @@ Resultado: Solo el ticket "Question about feature"
 Mientras creas cada ticket, observa la terminal donde corre `npm run start:dev`:
 
 ```bash
-🤖 OpenAILLMClient: Processing ticket with OpenAI API...
-✅ OpenAI Response: {
-  "id": "chatcmpl-xxx",
-  "choices": [
-    {
-      "message": {
-        "content": "{\n  \"urgencyScore\": 0.9\n}"
-      }
-    }
-  ]
-}
-📝 OpenAI Text Response: {
-  "urgencyScore": 0.9
-}
-🎯 OpenAI Final Result: { urgencyScore: 0.9 }
+[2025-10-22 20:15:33.758 +0000] INFO: Processing ticket classification {"context":"GeminiLLMClient","provider":"gemini"}
+[2025-10-22 20:15:35.316 +0000] INFO: Urgency classification completed {"context":"GeminiLLMClient","model":"gemini-2.0-flash-lite","urgencyScore":0.9}
+[2025-10-22 20:15:35.317 +0000] INFO: Operation completed successfully {"context":"LoggingInterceptor","operation":"CREATE_TICKET","durationMs":1564,"responseType":"single"}
 ```
+
+**Características del Logging:**
+- ✅ Formato JSON estructurado en producción
+- ✅ Pretty-print con colores en desarrollo
+- ✅ CorrelationId único por request
+- ✅ Metadata contextual (provider, urgencyScore, duration, operation)
+- ✅ Compatible con ElasticSearch, Datadog, CloudWatch, Grafana Loki
 
 ---
 
@@ -222,6 +217,7 @@ return 'CRITICAL';
 
 ## ✅ Checklist Rápido
 
+### Tickets CRUD
 - [ ] Crear ticket CRITICAL y verificar `priority: "CRITICAL"`
 - [ ] Crear ticket MEDIUM y verificar `priority: "MEDIUM"`
 - [ ] Crear ticket LOW y verificar `priority: "LOW"`
@@ -229,6 +225,22 @@ return 'CRITICAL';
 - [ ] Filtrar `GET /tickets?priority=MEDIUM` - debe retornar 1 ticket
 - [ ] Filtrar `GET /tickets?priority=LOW` - debe retornar 1 ticket
 - [ ] Listar todos `GET /tickets` - debe retornar 3 tickets
+
+### Endpoints de Monitoreo
+- [ ] Health check `GET /api/v1/tickets/health` - debe retornar status "ok"
+- [ ] Debug endpoint `GET /api/v1/tickets/debug` (solo desarrollo)
+
+### Nuevas Características Implementadas
+- [x] Logging estructurado con Pino (JSON + pretty-print)
+- [x] CorrelationId en cada request
+- [x] Rate limiting global (10 req/s, 100 req/min, 500 req/15min)
+- [x] Retry logic con exponential backoff en LLM clients
+- [x] Timeout de 15 segundos en llamadas LLM
+- [x] Mapeo de excepciones de dominio a HTTP
+- [x] Endpoint de health check
+- [x] Endpoint de debug protegido (404 en producción)
+- [x] InMemoryRepository como Singleton
+- [x] Encapsulación de reglas de negocio en entidad Ticket
 
 ---
 

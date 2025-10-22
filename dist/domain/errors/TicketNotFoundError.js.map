@@ -1,0 +1,1 @@
+{"version":3,"file":"TicketNotFoundError.js","sourceRoot":"","sources":["../../../src/domain/errors/TicketNotFoundError.ts"],"names":[],"mappings":";;;AAAA,MAAa,mBAAoB,SAAQ,KAAK;IAC5C,YAAY,QAAgB;QAC1B,KAAK,CAAC,kBAAkB,QAAQ,YAAY,CAAC,CAAC;QAC9C,IAAI,CAAC,IAAI,GAAG,qBAAqB,CAAC;IACpC,CAAC;CACF;AALD,kDAKC"}

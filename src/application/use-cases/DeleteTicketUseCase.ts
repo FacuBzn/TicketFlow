@@ -1,5 +1,5 @@
 import { TicketRepositoryPort } from '../ports/TicketRepositoryPort';
-import { NotFoundException } from '@nestjs/common';
+import { TicketNotFoundError } from '../../domain/errors/TicketNotFoundError';
 
 export interface DeleteTicketResponse {
   deleted: boolean;
@@ -13,7 +13,7 @@ export class DeleteTicketUseCase {
     const ticket = await this.ticketRepository.findById(id);
     
     if (!ticket) {
-      throw new NotFoundException(`Ticket with ID ${id} not found`);
+      throw new TicketNotFoundError(id);
     }
 
     await this.ticketRepository.delete(id);

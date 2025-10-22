@@ -1,6 +1,6 @@
 import { TicketRepositoryPort } from '../ports/TicketRepositoryPort';
 import { Ticket, TicketStatus } from '../../domain/entities/Ticket';
-import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { TicketNotFoundError } from '../../domain/errors/TicketNotFoundError';
 import { StateTransitionValidator } from '../../domain/services/StateTransitionValidator';
 
 export class UpdateTicketStatusUseCase {
@@ -10,20 +10,14 @@ export class UpdateTicketStatusUseCase {
     const ticket = await this.ticketRepository.findById(id);
     
     if (!ticket) {
-      throw new NotFoundException(`Ticket with ID ${id} not found`);
+      throw new TicketNotFoundError(id);
     }
 
-    // Validate state transition
-    try {
-      StateTransitionValidator.validate(ticket.status, newStatus);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Invalid state transition';
-      throw new BadRequestException(message);
-    }
+    // Validate state transition (will throw InvalidStateTransitionError if invalid)
+    StateTransitionValidator.validate(ticket.status, newStatus);
 
-    // Update status and timestamp
-    ticket.status = newStatus;
-    ticket.updatedAt = new Date();
+    // Use encapsulated method to update status
+    ticket.updateStatus(newStatus);
 
     await this.ticketRepository.save(ticket);
     return ticket;
